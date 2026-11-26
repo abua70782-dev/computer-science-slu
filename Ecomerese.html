@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheria Global — International Multi-Language E-Commerce Storefront</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 text-white text-xs sm:text-sm py-2 px-4 shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1 text-center sm:text-left">
+            <div id="announcement-text" class="font-medium tracking-wide">
+                🌍 Global Express Shipping available to over 120 countries | Duty-free options for regional hubs
+            </div>
+            <div class="flex items-center gap-4 text-xs font-semibold">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-400"></i> <span id="lbl-secure-pay">Secure Payment</span></span>
+                <span class="hidden md:inline text-slate-400">|</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-headset text-indigo-400"></i> <span id="lbl-support">24/7 Support</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-globe text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-700 to-violet-800 bg-clip-text text-transparent">AETHERIA</h1>
+                    <p class="text-[10px] tracking-widest font-bold uppercase text-slate-400 -mt-1" id="lbl-brand-sub">Global Marketplace</p>
+                </div>
+            </div>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex flex-1 max-w-lg mx-6">
+                <div class="relative w-full">
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search products across categories..." class="w-full bg-slate-100/80 border border-slate-200 rounded-full pl-11 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                </div>
+            </div>
+
+            <!-- Controls: Language, Currency, Cart, Wishlist -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                
+                <!-- Language Selector -->
+                <div class="relative">
+                    <select id="language-select" onchange="changeLanguage(this.value)" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer">
+                        <option value="en">English (EN)</option>
+                        <option value="om">Afaan Oromoo (OM)</option>
+                        <option value="am">አማርኛ (AM)</option>
+                        <option value="es">Español (ES)</option>
+                        <option value="fr">Français (FR)</option>
+                        <option value="zh">中文 (ZH)</option>
+                        <option value="ar">العربية (AR)</option>
+                    </select>
+                </div>
+
+                <!-- Currency Selector -->
+                <div class="relative">
+                    <select id="currency-select" onchange="changeCurrency(this.value)" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="AED">AED (د.إ)</option>
+                        <option value="CNY">CNY (¥)</option>
+                        <option value="ETB">ETB (Br)</option>
+                    </select>
+                </div>
+
+                <!-- Wishlist Button -->
+                <button onclick="toggleWishlistModal()" class="relative p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition" title="Wishlist">
+                    <i class="fa-regular fa-heart text-base"></i>
+                    <span id="wishlist-badge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md hidden">0</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCartModal()" class="relative p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-md shadow-indigo-600/30 flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping text-sm"></i>
+                    <span class="hidden sm:inline text-xs font-bold" id="lbl-cart">Cart</span>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md hidden">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar Bar -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <input type="text" id="mobile-search-input" oninput="handleSearch(this.value)" placeholder="Search products..." class="w-full bg-slate-100 border border-slate-200 rounded-full pl-10 pr-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Hero Promotional Banner -->
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 text-white p-8 sm:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -top-20 w-80 h-80 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="z-10 max-w-xl space-y-4 text-center md:text-left">
+                <span id="hero-badge" class="inline-flex items-center gap-2 bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide backdrop-blur-md">
+                    <i class="fa-solid fa-bolt text-amber-400"></i> Global Spring Showcase 2026
+                </span>
+                <h2 id="hero-title" class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                    Next-Gen Tech & Lifestyle Imports
+                </h2>
+                <p id="hero-desc" class="text-slate-300 text-sm sm:text-base font-normal leading-relaxed">
+                    Explore curated world-class innovations, sustainable apparel, and smart home essentials with localized multi-currency pricing and duty calculator.
+                </p>
+                <div class="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
+                    <button onclick="scrollToCatalog()" id="hero-btn-explore" class="bg-white hover:bg-slate-100 text-slate-900 font-bold px-6 py-3 rounded-xl shadow-lg transition transform active:scale-95 flex items-center gap-2 text-sm">
+                        <span>Explore Catalog</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button onclick="openDutyCalculatorModal()" id="hero-btn-duty" class="bg-indigo-600/40 hover:bg-indigo-600/60 border border-indigo-400/30 text-white font-semibold px-5 py-3 rounded-xl backdrop-blur-md transition text-sm">
+                        <i class="fa-solid fa-calculator mr-2"></i> Duty & Tax Estimator
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hero Highlights Card -->
+            <div class="z-10 grid grid-cols-2 gap-4 w-full md:w-auto">
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl text-center">
+                    <div class="text-3xl font-extrabold text-indigo-300">120+</div>
+                    <div class="text-xs text-slate-300 mt-1" id="stat-countries">Countries Served</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl text-center">
+                    <div class="text-3xl font-extrabold text-emerald-400">99.8%</div>
+                    <div class="text-xs text-slate-300 mt-1" id="stat-satisfaction">Customer Rating</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl text-center">
+                    <div class="text-3xl font-extrabold text-violet-300">24/7</div>
+                    <div class="text-xs text-slate-300 mt-1" id="stat-support">Multilingual Support</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl text-center">
+                    <div class="text-3xl font-extrabold text-amber-300">Instant</div>
+                    <div class="text-xs text-slate-300 mt-1" id="stat-conversion">Currency Conversion</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catalog Section Header & Categories -->
+        <div id="catalog-section" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 id="catalog-heading" class="text-2xl font-bold tracking-tight text-slate-900">Featured Global Products</h3>
+                    <p id="catalog-sub" class="text-sm text-slate-500">Shop high-grade electronics, fashion, and lifestyle items sourced worldwide.</p>
+                </div>
+                
+                <!-- Category Filter Buttons -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar" id="category-filters-container">
+                    <button onclick="filterCategory('all')" id="cat-all" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-md shadow-indigo-600/20 transition whitespace-nowrap">All Items</button>
+                    <button onclick="filterCategory('electronics')" id="cat-electronics" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition whitespace-nowrap">Electronics</button>
+                    <button onclick="filterCategory('fashion')" id="cat-fashion" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition whitespace-nowrap">Fashion & Apparel</button>
+                    <button onclick="filterCategory('lifestyle')" id="cat-lifestyle" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition whitespace-nowrap">Home & Living</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Duty Calculator & Regional Shipping Banner -->
+        <div class="bg-gradient-to-br from-violet-900 to-indigo-950 rounded-3xl p-8 text-white shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div class="space-y-3 max-w-xl">
+                <span class="bg-white/10 border border-white/20 text-indigo-200 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider" id="duty-banner-tag">Global Tax Transparency</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight" id="duty-banner-title">Estimate Custom Duties & Regional Taxes</h3>
+                <p class="text-slate-300 text-sm leading-relaxed" id="duty-banner-desc">Select your destination country to instantly calculate applicable local VAT, import tariffs, and estimated delivery timelines before checkout.</p>
+            </div>
+            <button onclick="openDutyCalculatorModal()" class="bg-white hover:bg-slate-100 text-indigo-950 font-bold px-6 py-3.5 rounded-xl shadow-lg transition transform active:scale-95 whitespace-nowrap text-sm flex items-center gap-2">
+                <i class="fa-solid fa-calculator text-indigo-600"></i>
+                <span id="duty-banner-btn">Calculate Duties Now</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-16 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <span class="text-lg font-extrabold text-slate-900">AETHERIA</span>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed" id="footer-about">
+                    Connecting global innovators and artisans with buyers worldwide through transparent pricing, multi-language support, and secure logistics.
+                </p>
+                <p class="text-xs text-slate-400">© 2026 Aetheria Global Inc. All rights reserved.</p>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4" id="footer-col-1">Global Hubs</h4>
+                <ul class="space-y-2 text-xs text-slate-600">
+                    <li><i class="fa-solid fa-location-dot mr-1.5 text-indigo-600"></i> Addis Ababa, East Africa Hub</li>
+                    <li><i class="fa-solid fa-location-dot mr-1.5 text-indigo-600"></i> Dubai, Middle East Logistics</li>
+                    <li><i class="fa-solid fa-location-dot mr-1.5 text-indigo-600"></i> Singapore, APAC Gateway</li>
+                    <li><i class="fa-solid fa-location-dot mr-1.5 text-indigo-600"></i> Frankfurt, European Depot</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4" id="footer-col-2">Customer Service</h4>
+                <ul class="space-y-2 text-xs text-slate-600">
+                    <li><a href="#" onclick="showNotification('Opening Help Center...')" class="hover:text-indigo-600 transition" id="foot-link-help">Help Center & FAQ</a></li>
+                    <li><a href="#" onclick="showNotification('Opening Tracking Portal...')" class="hover:text-indigo-600 transition" id="foot-link-track">Global Order Tracking</a></li>
+                    <li><a href="#" onclick="showNotification('Opening Returns policy...')" class="hover:text-indigo-600 transition" id="foot-link-returns">Returns & Refunds</a></li>
+                    <li><a href="#" onclick="openDutyCalculatorModal()" class="hover:text-indigo-600 transition" id="foot-link-duty">Customs Calculator</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4" id="footer-col-3">Newsletter</h4>
+                <p class="text-xs text-slate-500 mb-3" id="footer-newsletter-desc">Subscribe for weekly international trade updates and VIP product drops.</p>
+                <div class="flex gap-2">
+                    <input type="email" id="newsletter-email" placeholder="Your email address" class="bg-slate-100 border border-slate-200 text-xs rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button onclick="subscribeNewsletter()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">Join</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Slide-Over / Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleCartModal()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col animate-fade-in">
+                <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-cart-shopping text-indigo-600 text-lg"></i>
+                        <h3 class="text-lg font-bold text-slate-900" id="cart-modal-title">Shopping Cart</h3>
+                    </div>
+                    <button onclick="toggleCartModal()" class="text-slate-400 hover:text-slate-700 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-slate-100">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="p-6 border-t border-slate-200 bg-slate-50 space-y-4">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-600" id="cart-subtotal-label">Subtotal:</span>
+                        <span id="cart-subtotal-amount" class="font-bold text-slate-900">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-600" id="cart-shipping-label">Est. Shipping & Duty:</span>
+                        <span id="cart-shipping-amount" class="font-bold text-emerald-600">Calculated at Checkout</span>
+                    </div>
+                    <div class="border-t border-slate-200 pt-3 flex justify-between text-base font-extrabold">
+                        <span id="cart-total-label">Total:</span>
+                        <span id="cart-total-amount" class="text-indigo-600">$0.00</span>
+                    </div>
+                    <button onclick="proceedToCheckout()" id="cart-checkout-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Proceed to Secure Checkout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="toggleWishlistModal()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col animate-fade-in">
+                <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-rose-500 text-lg"></i>
+                        <h3 class="text-lg font-bold text-slate-900" id="wishlist-modal-title">My Saved Wishlist</h3>
+                    </div>
+                    <button onclick="toggleWishlistModal()" class="text-slate-400 hover:text-slate-700 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div id="wishlist-items-container" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-slate-100">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="p-6 border-t border-slate-200 bg-slate-50">
+                    <button onclick="moveAllWishlistToCart()" id="wishlist-move-btn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cart-plus"></i> Add All to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal" class="fixed inset-0 z-50 overflow-y-auto hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeProductModal()"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden z-10 animate-fade-in">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 z-20 bg-white/80 backdrop-blur-md hover:bg-white text-slate-700 p-2 rounded-full shadow transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div id="product-modal-content" class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Duty & Tax Calculator Modal -->
+    <div id="duty-calculator-modal" class="fixed inset-0 z-50 overflow-y-auto hidden flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeDutyCalculatorModal()"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 z-10 animate-fade-in space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-calculator text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900" id="duty-modal-title">Customs Duty & Tax Estimator</h3>
+                </div>
+                <button onclick="closeDutyCalculatorModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" id="duty-lbl-dest">Destination Country</label>
+                    <select id="calc-country" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="ET">Ethiopia (ET) - VAT 15%, Duty 10%</option>
+                        <option value="US">United States (US) - VAT 0%, Duty 3%</option>
+                        <option value="AE">United Arab Emirates (AE) - VAT 5%, Duty 5%</option>
+                        <option value="CN">China (CN) - VAT 13%, Duty 8%</option>
+                        <option value="EU">European Union (EU) - VAT 20%, Duty 4%</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" id="duty-lbl-val">Estimated Order Value (USD)</label>
+                    <input type="number" id="calc-amount" value="250" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between text-xs text-slate-600">
+                        <span id="calc-lbl-base">Base Product Value:</span>
+                        <span id="calc-res-base" class="font-semibold text-slate-900">$250.00</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-600">
+                        <span id="calc-lbl-tax">Estimated Local VAT:</span>
+                        <span id="calc-res-tax" class="font-semibold text-slate-900">$37.50</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-600">
+                        <span id="calc-lbl-tariff">Import Tariff / Duty:</span>
+                        <span id="calc-res-tariff" class="font-semibold text-slate-900">$25.00</span>
+                    </div>
+                    <div class="border-t border-indigo-200 pt-2 flex justify-between text-sm font-extrabold text-indigo-950">
+                        <span id="calc-lbl-final">Estimated Total Landed Cost:</span>
+                        <span id="calc-res-total">$312.50</span>
+                    </div>
+                </div>
+                <button onclick="calculateDuty()" id="calc-btn-run" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md transition text-sm">
+                    Calculate Landed Cost
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-xs sm:text-sm font-medium">Notification message</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- Multilingual Dictionary (English, Afaan Oromoo, Amharic, Spanish, French, Chinese, Arabic) ---
+        const translations = {
+            en: {
+                announcement: "🌍 Global Express Shipping available to over 120 countries | Duty-free options for regional hubs",
+                securePay: "Secure Payment",
+                support: "24/7 Support",
+                brandSub: "Global Marketplace",
+                searchPlaceholder: "Search products across categories...",
+                cart: "Cart",
+                heroBadge: "Global Spring Showcase 2026",
+                heroTitle: "Next-Gen Tech & Lifestyle Imports",
+                heroDesc: "Explore curated world-class innovations, sustainable apparel, and smart home essentials with localized multi-currency pricing and duty calculator.",
+                heroBtnExplore: "Explore Catalog",
+                heroBtnDuty: "Duty & Tax Estimator",
+                statCountries: "Countries Served",
+                statSatisfaction: "Customer Rating",
+                statSupport: "Multilingual Support",
+                statConversion: "Currency Conversion",
+                catalogHeading: "Featured Global Products",
+                catalogSub: "Shop high-grade electronics, fashion, and lifestyle items sourced worldwide.",
+                catAll: "All Items",
+                catElectronics: "Electronics",
+                catFashion: "Fashion & Apparel",
+                catLifestyle: "Home & Living",
+                dutyBannerTag: "Global Tax Transparency",
+                dutyBannerTitle: "Estimate Custom Duties & Regional Taxes",
+                dutyBannerDesc: "Select your destination country to instantly calculate applicable local VAT, import tariffs, and estimated delivery timelines before checkout.",
+                dutyBannerBtn: "Calculate Duties Now",
+                footerAbout: "Connecting global innovators and artisans with buyers worldwide through transparent pricing, multi-language support, and secure logistics.",
+                footerCol1: "Global Hubs",
+                footerCol2: "Customer Service",
+                footerCol3: "Newsletter",
+                footLinkHelp: "Help Center & FAQ",
+                footLinkTrack: "Global Order Tracking",
+                footLinkReturns: "Returns & Refunds",
+                footLinkDuty: "Customs Calculator",
+                newsletterPlaceholder: "Your email address",
+                newsletterBtn: "Join",
+                cartModalTitle: "Shopping Cart",
+                cartSubtotal: "Subtotal:",
+                cartShipping: "Est. Shipping & Duty:",
+                cartTotal: "Total:",
+                cartCheckoutBtn: "Proceed to Secure Checkout",
+                wishlistModalTitle: "My Saved Wishlist",
+                wishlistMoveBtn: "Add All to Cart",
+                dutyModalTitle: "Customs Duty & Tax Estimator",
+                dutyDest: "Destination Country",
+                dutyVal: "Estimated Order Value (USD)",
+                calcBase: "Base Product Value:",
+                calcTax: "Estimated Local VAT:",
+                calcTariff: "Import Tariff / Duty:",
+                calcFinal: "Estimated Total Landed Cost:",
+                calcRun: "Calculate Landed Cost",
+                addToCart: "Add to Cart",
+                inWishlist: "Saved",
+                details: "Details",
+                warranty: "2-Year Global Warranty",
+                freeShipping: "Free Duty-Free Shipping"
+            },
+            om: {
+                announcement: "🌍 Ergaan Addunyaa guutuu biyyoota 120 olitti dhiyaata | Gibira-Malee tooyannoo naannawaaf",
+                securePay: "Kaffaltii Amansiisaa",
+                support: "Deeggarsa 24/7",
+                brandSub: "Gabaa Addunyaa",
+                searchPlaceholder: "Oomishoota gosa addaddaa barbaadi...",
+                cart: "Kartii",
+                heroBadge: "Agarsiisa Ganna Addunyaa 2026",
+                heroTitle: "Teknoolojii fi Jireenya Haaraa Fiduun",
+                heroDesc: "Bohaartii addunyaa, uffata filatamaa fi meeshaalee manaaf ta'an gatii maallaqa addaddaa fi shallagii gibiraa waliin ilaalaa.",
+                heroBtnExplore: "Katalogi Ilaali",
+                heroBtnDuty: "Shallagii Gibiraa",
+                statCountries: "Biyyoota Tajaajila Argatan",
+                statSatisfaction: "Gatii Maamiltootaa",
+                statSupport: "Deeggarsa Afaan Hedduu",
+                statConversion: "Jijjiirraa Maallaqa Saffisaa",
+                catalogHeading: "Oomishoota Addunyaa Filataman",
+                catalogSub: "Elektirooniksii, uffataa fi meeshaalee manaaf addunyaarraa falaman bitadhaa.",
+                catAll: "Meeseewwan Hundumaa",
+                catElectronics: "Elektirooniksii",
+                catFashion: "Faashinii & Uffata",
+                catLifestyle: "Mana & Jireenya",
+                dutyBannerTag: "Iftoomina Gibira Addunyaa",
+                dutyBannerTitle: "Gibira Gumrukaa fi Gibira Naannoo Shallagi",
+                dutyBannerDesc: "Biyya itti geessitan filachuun VAT naannoo, taarifii galchii fi yeroo geejjibaa duraan dursaa shallagi.",
+                dutyBannerBtn: "Amma Gibira Shallagi",
+                footerAbout: "Ogeeyyii fi kalaqtoota addunyaa bitoota waliin gatii ifa ta'e, deeggarsa afaan hedduu fi geejjibaa amansiisaan wal qunnamsiisa.",
+                footerCol1: "Hablota Addunyaa",
+                footerCol2: "Tajaajila Maamiltootaa",
+                footerCol3: "Gaazexaa Oduu",
+                footLinkHelp: "Giddugala Gargaarsaa & FAQ",
+                footLinkTrack: "Hordoffii Ajajaa Addunyaa",
+                footLinkReturns: "Deebii & Kaffaltii Qabame",
+                footLinkDuty: "Shallagii Gumrukaa",
+                newsletterPlaceholder: "Teessoo imeelii keessanii",
+                newsletterBtn: "Makami",
+                cartModalTitle: "Kartii Bittaa",
+                cartSubtotal: "Walitti Qabaa:",
+                cartShipping: "Geejjibaa & Gibira:",
+                cartTotal: "Waliigala:",
+                cartCheckoutBtn: "Kaffaltii Amansiisaatti Ce'aa",
+                wishlistModalTitle: "Tarree Barbaachisaa Koo",
+                wishlistMoveBtn: "Hundumaa Kartii Keessatti Dabali",
+                dutyModalTitle: "Shallagii Gibira Gumrukaa",
+                dutyDest: "Biyya Itti Geessitu",
+                dutyVal: "Gatii Oomishaa (USD)",
+                calcBase: "Gatii Bu'uuraa Oomishaa:",
+                calcTax: "VAT Naannoo Shallagame:",
+                calcTariff: "Taarifii Galchii / Gibira:",
+                calcFinal: "Gatii Waliigala Landed Cost:",
+                calcRun: "Landed Cost Shallagi",
+                addToCart: "Kartii Keessatti Dabali",
+                inWishlist: "Qabameera",
+                details: "Bal'ina",
+                warranty: "Wabiin Addunyaa Waggaa 2",
+                freeShipping: "Geejjibaa Gibira-Malee Bilisaa"
+            },
+            am: {
+                announcement: "🌍 ከ120 በላይ ሀገራት አለምአቀፍ ኤክስፕረስ ጭነት | ለቀጠናዊ ማዕከላት ከቀረጥ ነፃ አማራጮች",
+                securePay: "ደህንነቱ የተጠበቀ ክፍያ",
+                support: "24/7 ድጋፍ",
+                brandSub: "ዓለም አቀፍ ገበያ",
+                searchPlaceholder: "ምርቶችን በምድብ ይፈልጉ...",
+                cart: "ቅርጫት",
+                heroBadge: "የዓለም አቀፍ የጸደይ ማሳያ 2026",
+                heroTitle: "ቀጣይ-ትውልድ ቴክኖሎጂ እና የአኗኗር ዘይቤ",
+                heroDesc: "በብዙ ምንዛሬ ዋጋ አሰጣጥ እና የቀረጥ ማስያ የታገዘ ዓለም አቀፍ ፈጠራዎችን እና የቤት እቃዎችን ያስሱ።",
+                heroBtnExplore: "ካታሎግ ያስሱ",
+                heroBtnDuty: "የቀረጥ እና ታክስ ማስያ",
+                statCountries: "የተገለገለባቸው ሀገራት",
+                statSatisfaction: "የደንበኞች እርካታ",
+                statSupport: "ಬಹು-ቋንቋ ድጋፍ",
+                statConversion: "ፈጣን የምንዛሬ ልውውጥ",
+                catalogHeading: "ተወዳጅ ዓለም አቀፍ ምርቶች",
+                catalogSub: "ከመላው ዓለም የተገኙ ከፍተኛ ደረጃ ያላቸው ኤሌክትሮኒክስ፣ ፋሽን እና የቤት ዕቃዎችን ይግዙ።",
+                catAll: "ሁሉም እቃዎች",
+                catElectronics: "ኤሌክትሮኒክስ",
+                catFashion: "ፋሽን እና አልባሳት",
+                catLifestyle: "ቤት እና ኑሮ",
+                dutyBannerTag: "ዓለም አቀፍ የክፍያ ግልጽነት",
+                dutyBannerTitle: "የጉምሩክ ቀረጥ እና ክልላዊ ታክሶችን ይገምቱ",
+                dutyBannerDesc: "የሚደርሱበትን ሀገር በመምረጥ የሚመለከተውን የአካባቢ ቫት፣ የማስመጣት ታክስ እና የሚጠበቀውን የማድረሻ ጊዜ አስቀድመው ያ 计算።",
+                dutyBannerBtn: "አሁን ቀረጥ አስላ",
+                footerAbout: "ዓለም አቀፍ ፈጣሪዎችን እና የእጅ ባለሙያዎችን ከገዢዎች ጋር ግልጽ በሆነ ዋጋ፣ በባለብዙ ቋንቋ ድጋፍ እና ደህንነቱ የተጠበቀ ሎጂስቲክስ ያገናኛል።",
+                footerCol1: "ዓለም አቀፍ ማዕከላት",
+                footerCol2: "የደንበኞች አገልግሎት",
+                footerCol3: "ጋዜጣ",
+                footLinkHelp: "የእርዳታ ማዕከል እና ጥያቄዎች",
+                footLinkTrack: "የማዘዣ ክትትል",
+                footLinkReturns: "ተመላሾች እና ገንዘብ ተመላሽ",
+                footLinkDuty: "የጉምሩክ ማስያ",
+                newsletterPlaceholder: "የኢሜይል አድራሻዎ",
+                newsletterBtn: "ተቀላቀል",
+                cartModalTitle: "የግዢ ቅርጫት",
+                cartSubtotal: "ንዑስ ድምር:",
+                cartShipping: "ግምታዊ ጭነት እና ቀረጥ:",
+                cartTotal: "ድምር:",
+                cartCheckoutBtn: "ወደ ደህንነቱ የተጠበቀ ክፍያ ይቀጥሉ",
+                wishlistModalTitle: "የተቀመጡ ተወዳጆች",
+                wishlistMoveBtn: "ሁሉንም ወደ ቅርጫት ጨምር",
+                dutyModalTitle: "የጉምሩክ ቀረጥ እና ታክስ ማስያ",
+                dutyDest: "የመዳረሻ ሀገር",
+                dutyVal: "ግምታዊ የትዕዛዝ ዋጋ (USD)",
+                calcBase: "የምርት መሰረታዊ ዋጋ:",
+                calcTax: "ግምታዊ የአካባቢ ቫት:",
+                calcTariff: "የማስመጣት ታክስ / ቀረጥ:",
+                calcFinal: "ግምታዊ አጠቃላይ  लागत:",
+                calcRun: "የመድረሻ ወጪ አስላ",
+                addToCart: "ወደ ቅርጫት ጨምር",
+                inWishlist: "ተቀምጧል",
+                details: "ዝርዝሮች",
+                warranty: "የ 2 ዓመት ዓለም አቀፍ ዋስትና",
+                freeShipping: "ነፃ ከቀረጥ ነፃ ጭነት"
+            },
+            es: {
+                announcement: "🌍 Envío exprés global a más de 120 países | Opciones libres de impuestos para centros regionales",
+                securePay: "Pago Seguro",
+                support: "Soporte 24/7",
+                brandSub: "Mercado Global",
+                searchPlaceholder: "Buscar productos en categorías...",
+                cart: "Carrito",
+                heroBadge: "Exhibición Global de Primavera 2026",
+                heroTitle: "Importaciones de Tecnología y Estilo de Vida",
+                heroDesc: "Explore innovaciones de clase mundial, moda sostenible y artículos esenciales para el hogar.",
+                heroBtnExplore: "Explorar Catálogo",
+                heroBtnDuty: "Estimador de Aranceles",
+                statCountries: "Países Atendidos",
+                statSatisfaction: "Calificación de Clientes",
+                statSupport: "Soporte Multilingüe",
+                statConversion: "Conversión de Moneda",
+                catalogHeading: "Productos Globales Destacados",
+                catalogSub: "Compre electrónica, moda y artículos para el hogar de alta calidad.",
+                catAll: "Todos",
+                catElectronics: "Electrónica",
+                catFashion: "Moda y Ropa",
+                catLifestyle: "Hogar y Vida",
+                dutyBannerTag: "Transparencia Fiscal Global",
+                dutyBannerTitle: "Estime Aranceles Aduaneros e Impuestos Regionales",
+                dutyBannerDesc: "Seleccione su país de destino para calcular instantáneamente el IVA aplicable y aranceles.",
+                dutyBannerBtn: "Calcular Aranceles",
+                footerAbout: "Conectando innovadores globales con compradores a través de precios transparentes y logística segura.",
+                footerCol1: "Centros Globales",
+                footerCol2: "Servicio al Cliente",
+                footerCol3: "Boletín",
+                footLinkHelp: "Centro de Ayuda y FAQ",
+                footLinkTrack: "Rastreo de Pedidos",
+                footLinkReturns: "Devoluciones y Reembolsos",
+                footLinkDuty: "Calculadora de Aduanas",
+                newsletterPlaceholder: "Su correo electrónico",
+                newsletterBtn: "Unirse",
+                cartModalTitle: "Carrito de Compras",
+                cartSubtotal: "Subtotal:",
+                cartShipping: "Envío y Aranceles Est.:",
+                cartTotal: "Total:",
+                cartCheckoutBtn: "Proceder al Pago Seguro",
+                wishlistModalTitle: "Mi Lista de Deseos",
+                wishlistMoveBtn: "Agregar Todo al Carrito",
+                dutyModalTitle: "Estimador de Aranceles y Aduanas",
+                dutyDest: "País de Destino",
+                dutyVal: "Valor Estimado (USD)",
+                calcBase: "Valor Base del Producto:",
+                calcTax: "IVA Local Estimado:",
+                calcTariff: "Arancel de Importación:",
+                calcFinal: "Costo Total Estimado:",
+                calcRun: "Calcular Costo Total",
+                addToCart: "Agregar al Carrito",
+                inWishlist: "Guardado",
+                details: "Detalles",
+                warranty: "Garantía Global de 2 Años",
+                freeShipping: "Envío Gratis Libre de Aranceles"
+            },
+            fr: {
+                announcement: "🌍 Livraison express mondiale dans plus de 120 pays | Options hors taxes pour les hubs régionaux",
+                securePay: "Paiement Sécurisé",
+                support: "Support 24/7",
+                brandSub: "Marché Mondial",
+                searchPlaceholder: "Rechercher des produits...",
+                cart: "Panier",
+                heroBadge: "Présentation Printemps Mondial 2026",
+                heroTitle: "Importations Tech & Lifestyle de Pointe",
+                heroDesc: "Découvrez des innovations de premier plan, des vêtements durables et des essentiels pour la maison.",
+                heroBtnExplore: "Explorer le Catalogue",
+                heroBtnDuty: "Estimateur de Droits",
+                statCountries: "Pays Desservis",
+                statSatisfaction: "Satisfaction Client",
+                statSupport: "Support Multilingue",
+                statConversion: "Conversion Instantanée",
+                catalogHeading: "Produits Mondiaux Vedettes",
+                catalogSub: "Achetez de l'électronique, de la mode et des articles de maison haut de gamme.",
+                catAll: "Tous",
+                catElectronics: "Électronique",
+                catFashion: "Mode & Vêtements",
+                catLifestyle: "Maison & Habitat",
+                dutyBannerTag: "Transparence Fiscale Mondiale",
+                dutyBannerTitle: "Estimez les Droits de Douane et Taxes",
+                dutyBannerDesc: "Sélectionnez votre pays de destination pour calculer instantanément la TVA et les tarifs applicables.",
+                dutyBannerBtn: "Calculer les Droits",
+                footerAbout: "Connectant innovateurs et acheteurs du monde entier grâce à une tarification transparente.",
+                footerCol1: "Hubs Mondiaux",
+                footerCol2: "Service Client",
+                footerCol3: "Newsletter",
+                footLinkHelp: "Centre d'Aide & FAQ",
+                footLinkTrack: "Suivi des Commandes",
+                footLinkReturns: "Retours & Remboursements",
+                footLinkDuty: "Calculateur de Douane",
+                newsletterPlaceholder: "Votre adresse e-mail",
+                newsletterBtn: "S'inscrire",
+                cartModalTitle: "Panier d'Achat",
+                cartSubtotal: "Sous-total:",
+                cartShipping: "Expédition & Douane Estimées:",
+                cartTotal: "Total:",
+                cartCheckoutBtn: "Procéder au Paiement Sécurisé",
+                wishlistModalTitle: "Ma Liste d'Envies",
+                wishlistMoveBtn: "Tout Ajouter au Panier",
+                dutyModalTitle: "Estimateur de Droits de Douane",
+                dutyDest: "Pays de Destination",
+                dutyVal: "Valeur Estimée (USD)",
+                calcBase: "Valeur de Base du Produit:",
+                calcTax: "TVA Locale Estimée:",
+                calcTariff: "Tarif d'Importation:",
+                calcFinal: "Coût Total Estimé:",
+                calcRun: "Calculer le Coût Total",
+                addToCart: "Ajouter au Panier",
+                inWishlist: "Enregistré",
+                details: "Détails",
+                warranty: "Garantie Mondiale de 2 Ans",
+                freeShipping: "Livraison Gratuite Hors Taxes"
+            },
+            zh: {
+                announcement: "🌍 全球快递服务覆盖120多个国家 | 区域枢纽免税选项",
+                securePay: "安全支付",
+                support: "24/7 客户支持",
+                brandSub: "全球集市",
+                searchPlaceholder: "跨品类搜索商品...",
+                cart: "购物车",
+                heroBadge: "2026全球春季新品展",
+                heroTitle: "新一代科技与生活方式进口优品",
+                heroDesc: "探索世界级创新产品、可持续服饰以及智能家居必备品，支持多币种定价与关税计算器。",
+                heroBtnExplore: "浏览目录",
+                heroBtnDuty: "关税与税费估算",
+                statCountries: "服务国家",
+                statSatisfaction: "客户满意度",
+                statSupport: "多语言支持",
+                statConversion: "实时货币转换",
+                catalogHeading: "精选全球商品",
+                catalogSub: "选购来自世界各地的高档电子产品、时尚服饰和家居生活用品。",
+                catAll: "全部商品",
+                catElectronics: "电子数码",
+                catFashion: "时尚服饰",
+                catLifestyle: "家居生活",
+                dutyBannerTag: "全球税务透明度",
+                dutyBannerTitle: "预估关税与区域税费",
+                dutyBannerDesc: "选择您的目的地国家，即可在结账前即时计算适用的当地增值税、进口关税和预计交付时间。",
+                dutyBannerBtn: "立即计算关税",
+                footerAbout: "通过透明的定价、多语言支持和安全的物流，将全球创新者和工匠与世界各地的买家连接起来。",
+                footerCol1: "全球枢纽",
+                footerCol2: "客户服务",
+                footerCol3: "订阅资讯",
+                footLinkHelp: "帮助中心与常见问题",
+                footLinkTrack: "全球订单追踪",
+                footLinkReturns: "退货与退款",
+                footLinkDuty: "海关计算器",
+                newsletterPlaceholder: "您的电子邮箱",
+                newsletterBtn: "加入",
+                cartModalTitle: "购物车",
+                cartSubtotal: "小计:",
+                cartShipping: "预计运费及关税:",
+                cartTotal: "总计:",
+                cartCheckoutBtn: "前往安全结账",
+                wishlistModalTitle: "我的心愿单",
+                wishlistMoveBtn: "全部加入购物车",
+                dutyModalTitle: "关税与税费估算器",
+                dutyDest: "目的国家",
+                dutyVal: "预计订单价值 (USD)",
+                calcBase: "商品基础价值:",
+                calcTax: "预计当地增值税:",
+                calcTariff: "进口关税:",
+                calcFinal: "预计总落地成本:",
+                calcRun: "计算落地成本",
+                addToCart: "加入购物车",
+                inWishlist: "已收藏",
+                details: "详情",
+                warranty: "2年全球联保",
+                freeShipping: "免税包邮"
+            },
+            ar: {
+                announcement: "🌍 شحن سريع عالمي لأكثر من 120 دولة | خيارات معفاة من الرسوم الجمركية للمراكز الإقليمية",
+                securePay: "دفع آمن",
+                support: "دعم على مدار الساعة",
+                brandSub: "السوق العالمي",
+                searchPlaceholder: "ابحث عن المنتجات عبر الفئات...",
+                cart: "عربة التسوق",
+                heroBadge: "معرض الربيع العالمي 2026",
+                heroTitle: "واردات التكنولوجيا وأسلوب الحياة من الجيل التالي",
+                heroDesc: "استكشف ابتكارات عالمية المستوى، والأزياء المستدامة، وأساسيات المنزل الذكي مع تسعير متعدد العملات وحاسبة الرسوم.",
+                heroBtnExplore: "استكشاف الكتالوج",
+                heroBtnDuty: "حاسبة الرسوم والضرائب",
+                statCountries: "الدولة المخدومة",
+                statSatisfaction: "رضا العملاء",
+                statSupport: "دعم متعدد اللغات",
+                statConversion: "تحويل فوري للعملات",
+                catalogHeading: "منتجات عالمية مميزة",
+                catalogSub: "تسوق إلكترونيات وأزياء ومستلزمات منزلية عالية الجودة مستوردة من جميع أنحاء العالم.",
+                catAll: "جميع العناصر",
+                catElectronics: "الإلكترونيات",
+                catFashion: "الأزياء والملابس",
+                catLifestyle: "المنزل والحياة",
+                dutyBannerTag: "شفافية الضرائب العالمية",
+                dutyBannerTitle: "تقدير الرسوم الجمركية والضرائب الإقليمية",
+                dutyBannerDesc: "حدد البلد الوجهة لحساب ضريبة القيمة المضافة المحلية المطبقة ورسوم الاستيراد ومواعيد التسليم المقدرة قبل الدفع.",
+                dutyBannerBtn: "احسب الرسوم الآن",
+                footerAbout: "ربط المبتكرين والحرفيين العالميين بالمشترين في جميع أنحاء العالم من خلال تسعير شفاف ودعم متعدد اللغات.",
+                footerCol1: "المراكز العالمية",
+                footerCol2: "خدمة العملاء",
+                footerCol3: "النشرة الإخبارية",
+                footLinkHelp: "مركز المساعدة والأسئلة الشائعة",
+                footLinkTrack: "تتبع الطلبات العالمية",
+                footLinkReturns: "الإرجاع والاسترداد",
+                footLinkDuty: "حاسبة الجمارك",
+                newsletterPlaceholder: "عنوان بريدك الإلكتروني",
+                newsletterBtn: "انضم",
+                cartModalTitle: "عربة التسوق",
+                cartSubtotal: "المجموع الفرعي:",
+                cartShipping: "الشحن والرسوم المقدرة:",
+                cartTotal: "المجموع:",
+                cartCheckoutBtn: "متابعة الدفع الآمن",
+                wishlistModalTitle: "قائمة الأمنيات المحفوظة",
+                wishlistMoveBtn: "إضافة الكل إلى العربة",
+                dutyModalTitle: "حاسبة الرسوم الجمركية والضرائب",
+                dutyDest: "بلد الوجهة",
+                dutyVal: "قيمة الطلب المقدرة (USD)",
+                calcBase: "القيمة الأساسية للمنتج:",
+                calcTax: "ضريبة القيمة المضافة المقدرة:",
+                calcTariff: "تعريفة الاستيراد / الرسوم:",
+                calcFinal: "إجمالي التكلفة الواصلة المقدرة:",
+                calcRun: "احسب التكلفة الإجمالية",
+                addToCart: "أضف إلى العربة",
+                inWishlist: "محفوظ",
+                details: "التفاصيل",
+                warranty: "ضمان عالمي لمدة عامين",
+                freeShipping: "شحن مجاني معفى من الرسوم"
+            }
+        };
+
+        // --- Product Database ---
+        const products = [
+            {
+                id: 1,
+                category: 'electronics',
+                title: {
+                    en: "Aetheria Pro Quantum ANC Headphones",
+                    om: "Istiqaa'oo Aetheria Pro Quantum ANC",
+                    am: "አቴሪያ ፕሮኳንተም ANC የጆሮ ማዳመጫ",
+                    es: "Auriculares Aetheria Pro Quantum ANC",
+                    fr: "Casque Aetheria Pro Quantum ANC",
+                    zh: "Aetheria Pro Quantum 主动降噪耳机",
+                    ar: "سماعات أثيريا برو كوانتوم إلغاء الضوضاء"
+                },
+                priceUSD: 249.99,
+                rating: 4.9,
+                reviewsCount: 1420,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Studio-grade spatial audio with 40-hour hybrid active noise cancellation and ultra-soft protein leather ear cushions.",
+                    om: "Sagaleen sadarkaa istuudiyoo kansaariisii sagalee gaarii sa'atii 40 fi footii gurraa laafaa.",
+                    am: "የስቱዲዮ ደረጃ ድምፅ ከ 40 ሰዓታት ንቁ የድምፅ መሰረዝ እና እጅግ ለስላሳ የጆሮ ትራስ ጋር።",
+                    es: "Audio espacial de grado de estudio con cancelación activa de ruido híbrida de 40 horas.",
+                    fr: "Audio spatial de qualité studio avec annulation active du bruit hybride de 40 heures.",
+                    zh: "录音室级空间音频，具有40小时混合主动降噪和超软蛋白质皮革耳垫。",
+                    ar: "صوت مكاني بمستوى الاستوديو مع إلغاء نشط للضوضاء لمدة 40 ساعة."
+                }
+            },
+            {
+                id: 2,
+                category: 'lifestyle',
+                title: {
+                    en: "Zenith Precision Smart Ceramic Coffee Maker",
+                    om: "Mijatoo Buna Saayinsii Zenith Precision",
+                    am: "ዜኒት ፕሪሲሽን ስማርት ሴራሚክ ቡና ሰሪ",
+                    es: "Cafetera Inteligente de Cerámica Zenith Precision",
+                    fr: "Cafetière Intelligente en Céramique Zenith Precision",
+                    zh: "Zenith 精密智能陶瓷咖啡机",
+                    ar: "صانعة القهوة الذكية الخزفية من زينيث بريسيشن"
+                },
+                priceUSD: 189.00,
+                rating: 4.8,
+                reviewsCount: 930,
+                image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Automated artisan pour-over system with programmable temperature profiles and integrated conical burr grinder.",
+                    om: "Sirna bishaanii bunaf qophaa'e ho'ina isaa sirreessuu danda'u.",
+                    am: "የሙቀት መጠን ማስተካከያ እና የተቀናጀ መፍጫ ያለው አውቶማቲክ የቡና ማፍላት ስርዓት።",
+                    es: "Sistema automatizado de vertido con perfiles de temperatura programables y molinillo integrado.",
+                    fr: "Système de versement automatisé avec profils de température programmables et moulin intégré.",
+                    zh: "自动化手冲系统，具有可编程温度曲线和集成锥形毛刺研磨机。",
+                    ar: "نظام تحضير آلي مع ملفات تعريف درجات الحرارة القابلة للبرمجة ومطحنة مدمجة."
+                }
+            },
+            {
+                id: 3,
+                category: 'fashion',
+                title: {
+                    en: "Nomad Eco-Linen Tailored Trench Coat",
+                    om: "Kootii Istayilii Nomad Eco-Linen",
+                    am: "ኖማድ ኢኮ-ሊነን የተዘጋጀ የዝናብ ኮት",
+                    es: "Abrigo Trench de Lino Ecológico Nomad",
+                    fr: "Trench-coat Tailleur en Lin Éco Nomad",
+                    zh: "Nomad 环保亚麻量身定制风衣",
+                    ar: "معطف تيرينش المصنوع من الكتان البيئي من نوماد"
+                },
+                priceUSD: 145.50,
+                rating: 4.7,
+                reviewsCount: 610,
+                image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Breathable organic flax linen tailored for all-season climate adaptation with water-repellent organic finish.",
+                    om: "Lafa dhiibbaa qilleensaa dandamachuu danda'uuf kan hojjetame.",
+                    am: "ለተለያዩ የአየር ንብረት ሁኔታዎች የተዘጋጀ እና ውሃ የማያስተላልፍ ኦርጋኒክ እቃ።",
+                    es: "Lino orgánico transpirable adaptado para todo tipo de clima con acabado repelente al agua.",
+                    fr: "Lin biologique respirant adapté à toutes les saisons avec finition hydrofuge.",
+                    zh: "透气有机亚麻量身定制，适合全天候气候适应，具有防水有机涂层。",
+                    ar: "كتان عضوي مسامي مصمم للتكيف مع جميع المناخات مع لمسة نهائية عضوية طاردة للمياه."
+                }
+            },
+            {
+                id: 4,
+                category: 'electronics',
+                title: {
+                    en: "Aetheria Horizon Ultra 4K Projector",
+                    om: "Pirojekterii Aetheria Horizon Ultra 4K",
+                    am: "አቴሪያ ሆራይዘን አልትራ 4ኬ ፕሮጀክተር",
+                    es: "Proyector Aetheria Horizon Ultra 4K",
+                    fr: "Projecteur Aetheria Horizon Ultra 4K",
+                    zh: "Aetheria Horizon Ultra 4K 投影仪",
+                    ar: "جهاز عرض أثيريا هورايزون ألترا 4 كي"
+                },
+                priceUSD: 799.00,
+                rating: 4.9,
+                reviewsCount: 380,
+                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Ultra-bright laser projection with auto-focus, HDR10+ support, and Harman Kardon acoustic speakers.",
+                    om: "Pirojekterii leezarii ifaa guddaa qabu, auto-focus fi sagalee qulqulluu qabu.",
+                    am: " እጅግ ብሩህ የሌዘር პროጀክሽን ከራስ-ማተኮር እና የሃርማን ካርዶን ድምጽ ማጉያዎች ጋር።",
+                    es: "Proyección láser ultrabrillante con enfoque automático y altavoces Harman Kardon.",
+                    fr: "Projection laser ultra-lumineuse avec autofocus et haut-parleurs Harman Kardon.",
+                    zh: "超高亮度激光投影，支持自动对焦、HDR10+ 和哈曼卡顿音响。",
+                    ar: "عرض ليزر فائق السطوع مع تركيز تلقائي ومكبرات صوت هارمان كاردون."
+                }
+            },
+            {
+                id: 5,
+                category: 'lifestyle',
+                title: {
+                    en: "Aetheria Aura Botanical Smart Planter",
+                    om: "Akkasii Biqiltuu Smart Aetheria Aura",
+                    am: "አቴሪያ ኦራ የእጽዋት ስማርት ማሰሮ",
+                    es: "Maceta Inteligente Botánica Aetheria Aura",
+                    fr: "Jardinière Intelligente Botanique Aetheria Aura",
+                    zh: "Aetheria Aura 植物智能花盆",
+                    ar: "وعاء النباتات الذكي أثيريا أورا النباتي"
+                },
+                priceUSD: 95.00,
+                rating: 4.6,
+                reviewsCount: 512,
+                image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Self-watering hydroponic planter with biometric health sensors and adaptive spectrum LED grow lights.",
+                    om: "Meeshaa biqiltuu ofumaan bishaan obaasu sensara fayyaa biqiltuu qabu.",
+                    am: "እራሱን የሚያጠጣ የሃይድሮፖኒክ ማሰሮ ከባዮሜትሪክ ጤና ዳሳሾች ጋር።",
+                    es: "Maceta hidropónica de autorriego con sensores de salud biométricos y luces LED.",
+                    fr: "Jardinière hydroponique auto-arrosante avec capteurs de santé biométriques.",
+                    zh: "自动浇水水培花盆，配有生物ometric健康传感器和自适应光谱LED生长灯。",
+                    ar: "وعاء زراعة مائي ذاتي السقي مع أجهزة استشعار صحية حيوية وأضواء نمو LED."
+                }
+            },
+            {
+                id: 6,
+                category: 'fashion',
+                title: {
+                    en: "Titanium Minimalist Aviator Chronograph",
+                    om: "Sa'aatii Harka Titanium Aviator",
+                    am: "ታይታኒየም አቪዬተር ክሮኖግራፍ ሰዓት",
+                    es: "Reloj Cronógrafo Aviador Minimalista de Titanio",
+                    fr: "Montre Chronographe Aviateur Minimaliste en Titane",
+                    zh: "钛金属极简飞行员计时码表",
+                    ar: "ساعة كرونوغراف أفياتور المصنوعة من التيتانيوم"
+                },
+                priceUSD: 310.00,
+                rating: 4.8,
+                reviewsCount: 789,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Aerospace-grade titanium case with sapphire crystal glass and Japanese automatic movement.",
+                    om: "Keessoo saffisa aerospace fi kiristaala safayirii kan qabu.",
+                    am: "የኤሮስፔስ ደረጃ የታይታኒየም መያዣ ከ ሰንፔር ክሪስታል መስታወት ጋር።",
+                    es: "Caja de titanio de grado aeroespacial con cristal de zafiro y movimiento automático.",
+                    fr: "Boîtier en titane de qualité aérospatiale avec verre saphir et mouvement automatique.",
+                    zh: "航空级钛金属表壳，配有蓝宝石水晶玻璃和日本自动机芯。",
+                    ar: "علبة من التيتانيوم بدرجة الفضاء مع زجاج كريستال الياقوت وحركة أوتوماتيكية."
+                }
+            },
+            {
+                id: 7,
+                category: 'electronics',
+                title: {
+                    en: "CyberStep Kinetic Ergonomic Mechanical Keyboard",
+                    om: "Keyboardii Mekaanikaalaa CyberStep",
+                    am: "ሳይበርስቴፕ ኪነቲክ ኤርጎኖሚክ ሜካኒካል ኪቦርድ",
+                    es: "Teclado Mecánico Ergonómico CyberStep Kinetic",
+                    fr: "Clavier Mécanique Ergonomique CyberStep Kinetic",
+                    zh: "CyberStep 动力学人体工学机械键盘",
+                    ar: "لوحة مفاتيح ميكانيكية مريحة سايبرستيب كينيتيك"
+                },
+                priceUSD: 165.00,
+                rating: 4.9,
+                reviewsCount: 1120,
+                image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "Hot-swappable custom switches with per-key RGB backlighting and aircraft-grade aluminum chassis.",
+                    om: "Fungnii jijjiirramuu danda'u, ifaa RGB fi aluminii qulqulluu irraa hojjetame.",
+                    am: "ሊለወጡ የሚችሉ ማብሪያና ማጥፊያዎች ከ RGB የጀርባ ብርሃን ጋር።",
+                    es: "Interruptores intercambiables en caliente con retroiluminación RGB por tecla.",
+                    fr: "Interrupteurs interchangeables à chaud avec rétroéclairage RGB par touche.",
+                    zh: "支持热插拔的自定义开关，带有每键 RGB 背光和航空级铝制机身。",
+                    ar: "مفاتيح قابلة للتبديل السريع مع إضاءة خلفية RGB لكل مفتاح."
+                }
+            },
+            {
+                id: 8,
+                category: 'lifestyle',
+                title: {
+                    en: "Solaris Nomad Portable Power Station 600W",
+                    om: "Steshiinii Humna Elektiriikii Solaris Nomad 600W",
+                    am: "ሶላሪስ ኖማድ ተንቀሳቃሽ የሃይል ማመንጫ 600 ዋ",
+                    es: "Estación de Energía Portátil Solaris Nomad 600W",
+                    fr: "Station Électrique Portable Solaris Nomad 600W",
+                    zh: "Solaris Nomad 600W 便携式储能电源",
+                    ar: "محطة الطاقة المحمولة سولاريس نوماد 600 واط"
+                },
+                priceUSD: 499.00,
+                rating: 4.9,
+                reviewsCount: 840,
+                image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=600&q=80",
+                desc: {
+                    en: "LiFePO4 battery pack with 10 output ports, solar panel charging input, and 10-year lifespan guarantee.",
+                    om: "Baatirii LiFePO4 buufata baasu 10 qabu, humna aduudhaan guutamu.",
+                    am: "የ LiFePO4 ባትሪ ጥቅል ከ 10 የውጤት ወደቦች እና የፀሐይ ፓነል ኃይል መሙላት ጋር።",
+                    es: "Batería LiFePO4 con 10 puertos de salida, entrada de carga solar y garantía de 10 años.",
+                    fr: "Batterie LiFePO4 avec 10 ports de sortie, entrée de charge solaire et garantie de 10 ans.",
+                    zh: "LiFePO4 电池组，具有 10 个输出端口、太阳能充电输入和 10 年寿命保证。",
+                    ar: "حزمة بطارية LiFePO4 مع 10 منافذ إخراج، وإدخال شحن بالطاقة الشمسية."
+                }
+            }
+        ];
+
+        // --- Currency Conversion Rates & Symbols ---
+        const currencies = {
+            USD: { symbol: '$', rate: 1.0 },
+            EUR: { symbol: '€', rate: 0.92 },
+            AED: { symbol: 'د.إ', rate: 3.67 },
+            CNY: { symbol: '¥', rate: 7.23 },
+            ETB: { symbol: 'Br', rate: 121.50 }
+        };
+
+        // --- State Management ---
+        let currentLang = 'en';
+        let currentCurrency = 'USD';
+        let selectedCategory = 'all';
+        let searchQuery = '';
+        let cart = [];
+        let wishlist = [];
+
+        // --- Initialization ---
+        window.onload = function() {
+            renderProducts();
+            updateLocalizedUI();
+        };
+
+        // --- Localization & Translation Engine ---
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const htmlEl = document.documentElement;
+            if (lang === 'ar') {
+                htmlEl.setAttribute('dir', 'rtl');
+            } else {
+                htmlEl.setAttribute('dir', 'ltr');
+            }
+            htmlEl.setAttribute('lang', lang);
+            updateLocalizedUI();
+            renderProducts();
+            renderCart();
+            renderWishlist();
+            showNotification(`Language switched to ${lang.toUpperCase()}`);
+        }
+
+        function changeCurrency(curr) {
+            currentCurrency = curr;
+            renderProducts();
+            renderCart();
+            renderWishlist();
+            showNotification(`Currency switched to ${curr}`);
+        }
+
+        function updateLocalizedUI() {
+            const t = translations[currentLang] || translations['en'];
+            
+            document.getElementById('announcement-text').innerText = t.announcement;
+            document.getElementById('lbl-secure-pay').innerText = t.securePay;
+            document.getElementById('lbl-support').innerText = t.support;
+            document.getElementById('lbl-brand-sub').innerText = t.brandSub;
+            document.getElementById('search-input').placeholder = t.searchPlaceholder;
+            document.getElementById('mobile-search-input').placeholder = t.searchPlaceholder;
+            document.getElementById('lbl-cart').innerText = t.cart;
+
+            document.getElementById('hero-badge').innerHTML = `<i class="fa-solid fa-bolt text-amber-400"></i> ${t.heroBadge}`;
+            document.getElementById('hero-title').innerText = t.heroTitle;
+            document.getElementById('hero-desc').innerText = t.heroDesc;
+            document.getElementById('hero-btn-explore').querySelector('span').innerText = t.heroBtnExplore;
+            document.getElementById('hero-btn-duty').innerHTML = `<i class="fa-solid fa-calculator mr-2"></i> ${t.heroBtnDuty}`;
+
+            document.getElementById('stat-countries').innerText = t.statCountries;
+            document.getElementById('stat-satisfaction').innerText = t.statSatisfaction;
+            document.getElementById('stat-support').innerText = t.statSupport;
+            document.getElementById('stat-conversion').innerText = t.statConversion;
+
+            document.getElementById('catalog-heading').innerText = t.catalogHeading;
+            document.getElementById('catalog-sub').innerText = t.catalogSub;
+
+            document.getElementById('cat-all').innerText = t.catAll;
+            document.getElementById('cat-electronics').innerText = t.catElectronics;
+            document.getElementById('cat-fashion').innerText = t.catFashion;
+            document.getElementById('cat-lifestyle').innerText = t.catLifestyle;
+
+            document.getElementById('duty-banner-tag').innerText = t.dutyBannerTag;
+            document.getElementById('duty-banner-title').innerText = t.dutyBannerTitle;
+            document.getElementById('duty-banner-desc').innerText = t.dutyBannerDesc;
+            document.getElementById('duty-banner-btn').innerText = t.dutyBannerBtn;
+
+            document.getElementById('footer-about').innerText = t.footerAbout;
+            document.getElementById('footer-col-1').innerText = t.footerCol1;
+            document.getElementById('footer-col-2').innerText = t.footerCol2;
+            document.getElementById('footer-col-3').innerText = t.footerCol3;
+            document.getElementById('foot-link-help').innerText = t.footLinkHelp;
+            document.getElementById('foot-link-track').innerText = t.footLinkTrack;
+            document.getElementById('foot-link-returns').innerText = t.footLinkReturns;
+            document.getElementById('foot-link-duty').innerText = t.footLinkDuty;
+            document.getElementById('newsletter-email').placeholder = t.newsletterPlaceholder;
+            document.querySelector('#footer-col-3 + div button').innerText = t.newsletterBtn;
+
+            document.getElementById('cart-modal-title').innerText = t.cartModalTitle;
+            document.getElementById('cart-subtotal-label').innerText = t.cartSubtotal;
+            document.getElementById('cart-shipping-label').innerText = t.cartShipping;
+            document.getElementById('cart-total-label').innerText = t.cartTotal;
+            document.getElementById('cart-checkout-btn').querySelector('span').innerText = t.cartCheckoutBtn;
+
+            document.getElementById('wishlist-modal-title').innerText = t.wishlistModalTitle;
+            document.getElementById('wishlist-move-btn').innerHTML = `<i class="fa-solid fa-cart-plus"></i> ${t.wishlistMoveBtn}`;
+
+            document.getElementById('duty-modal-title').innerText = t.dutyModalTitle;
+            document.getElementById('duty-lbl-dest').innerText = t.dutyDest;
+            document.getElementById('duty-lbl-val').innerText = t.dutyVal;
+            document.getElementById('calc-lbl-base').innerText = t.calcBase;
+            document.getElementById('calc-lbl-tax').innerText = t.calcTax;
+            document.getElementById('calc-lbl-tariff').innerText = t.calcTariff;
+            document.getElementById('calc-lbl-final').innerText = t.calcFinal;
+            document.getElementById('calc-btn-run').innerText = t.calcRun;
+        }
+
+        // --- Price Formatter ---
+        function formatPrice(usdAmount) {
+            const curr = currencies[currentCurrency];
+            const converted = usdAmount * curr.rate;
+            return `${curr.symbol}${converted.toFixed(2)}`;
+        }
+
+        // --- Render Product Catalog ---
+        function filterCategory(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition whitespace-nowrap";
+            });
+            const activeBtn = event ? event.currentTarget : document.getElementById('cat-all');
+            if (activeBtn) {
+                activeBtn.className = "category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-md shadow-indigo-600/20 transition whitespace-nowrap";
+            }
+            renderProducts();
+        }
+
+        function handleSearch(query) {
+            searchQuery = query.toLowerCase().trim();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            const t = translations[currentLang] || translations['en'];
+
+            const filtered = products.filter(p => {
+                const matchesCat = selectedCategory === 'all' || p.category === selectedCategory;
+                const titleText = (p.title[currentLang] || p.title['en']).toLowerCase();
+                const descText = (p.desc[currentLang] || p.desc['en']).toLowerCase();
+                const matchesSearch = titleText.includes(searchQuery) || descText.includes(searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400">
+                    <i class="fa-solid fa-box-open text-4xl mb-3"></i>
+                    <p class="text-sm font-medium">No products found matching your criteria.</p>
+                </div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const title = p.title[currentLang] || p.title['en'];
+                const desc = p.desc[currentLang] || p.desc['en'];
+                const isWishlisted = wishlist.some(item => item.id === p.id);
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group";
+                card.innerHTML = `
+                    <div class="relative bg-slate-100 h-56 overflow-hidden cursor-pointer" onclick="openProductModal(${p.id})">
+                        <img src="${p.image}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/indigo/white?text=Aetheria+Global'">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-900 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wider">${p.category}</span>
+                        <button onclick="event.stopPropagation(); toggleWishlist(${p.id})" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-slate-700 hover:text-rose-500 shadow-md transition">
+                            <i class="${isWishlisted ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2 cursor-pointer" onclick="openProductModal(${p.id})">
+                            <div class="flex items-center justify-between text-xs text-slate-500">
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-star text-amber-400"></i> ${p.rating} (${p.reviewsCount})</span>
+                                <span class="text-emerald-600 font-semibold text-[11px]"><i class="fa-solid fa-truck-fast mr-1"></i> ${t.freeShipping}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-base leading-snug group-hover:text-indigo-600 transition">${title}</h4>
+                            <p class="text-xs text-slate-500 line-clamp-2">${desc}</p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-400 uppercase tracking-wide block">Price</span>
+                                <span class="text-lg font-extrabold text-indigo-900">${formatPrice(p.priceUSD)}</span>
+                            </div>
+                            <button onclick="addToCart(${p.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-semibold text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-2 active:scale-95">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>${t.addToCart}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- Cart Operations ---
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateBadges();
+            renderCart();
+            showNotification(`Added "${product.title[currentLang] || product.title['en']}" to Cart`);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateBadges();
+            renderCart();
+        }
+
+        function updateCartQty(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    renderCart();
+                }
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            const t = translations[currentLang] || translations['en'];
+
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="py-16 text-center text-slate-400">
+                    <i class="fa-solid fa-cart-shopping text-4xl mb-3"></i>
+                    <p class="text-sm font-medium">Your shopping cart is empty.</p>
+                </div>`;
+                document.getElementById('cart-subtotal-amount').innerText = formatPrice(0);
+                document.getElementById('cart-total-amount').innerText = formatPrice(0);
+                return;
+            }
+
+            let subtotal = 0;
+            cart.forEach(item => {
+                const title = item.title[currentLang] || item.title['en'];
+                subtotal += item.priceUSD * item.quantity;
+
+                const div = document.createElement('div');
+                div.className = "py-4 flex items-center gap-4";
+                div.innerHTML = `
+                    <img src="${item.image}" alt="${title}" class="w-16 h-16 object-cover rounded-xl border border-slate-200">
+                    <div class="flex-1 min-w-0">
+                        <h5 class="text-xs font-bold text-slate-900 truncate">${title}</h5>
+                        <p class="text-xs font-semibold text-indigo-600 mt-0.5">${formatPrice(item.priceUSD)}</p>
+                        <div class="flex items-center gap-3 mt-2">
+                            <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                                <button onclick="updateCartQty(${item.id}, -1)" class="px-2.5 py-1 text-slate-600 hover:bg-slate-200">-</button>
+                                <span class="px-3 text-xs font-bold">${item.quantity}</span>
+                                <button onclick="updateCartQty(${item.id}, 1)" class="px-2.5 py-1 text-slate-600 hover:bg-slate-200">+</button>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('cart-subtotal-amount').innerText = formatPrice(subtotal);
+            document.getElementById('cart-total-amount').innerText = formatPrice(subtotal);
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+            renderCart();
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            showNotification("Secure checkout initialized with multi-currency escrow.");
+            toggleCartModal();
+            cart = [];
+            updateBadges();
+        }
+
+        // --- Wishlist Operations ---
+        function toggleWishlist(productId) {
+            const product = products.find(p => p.id === productId);
+            const index = wishlist.findIndex(item => item.id === productId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showNotification(`Removed from Wishlist`);
+            } else {
+                wishlist.push(product);
+                showNotification(`Added to Wishlist`);
+            }
+            updateBadges();
+            renderProducts();
+            renderWishlist();
+        }
+
+        function renderWishlist() {
+            const container = document.getElementById('wishlist-items-container');
+            container.innerHTML = '';
+            const t = translations[currentLang] || translations['en'];
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `<div class="py-16 text-center text-slate-400">
+                    <i class="fa-regular fa-heart text-4xl mb-3"></i>
+                    <p class="text-sm font-medium">Your wishlist is empty.</p>
+                </div>`;
+                return;
+            }
+
+            wishlist.forEach(item => {
+                const title = item.title[currentLang] || item.title['en'];
+                const div = document.createElement('div');
+                div.className = "py-4 flex items-center gap-4";
+                div.innerHTML = `
+                    <img src="${item.image}" alt="${title}" class="w-16 h-16 object-cover rounded-xl border border-slate-200">
+                    <div class="flex-1 min-w-0">
+                        <h5 class="text-xs font-bold text-slate-900 truncate">${title}</h5>
+                        <p class="text-xs font-semibold text-indigo-600 mt-0.5">${formatPrice(item.priceUSD)}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="addToCart(${item.id}); toggleWishlist(${item.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl text-xs"><i class="fa-solid fa-cart-plus"></i></button>
+                        <button onclick="toggleWishlist(${item.id})" class="text-slate-400 hover:text-rose-500 p-2"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleWishlistModal() {
+            const modal = document.getElementById('wishlist-modal');
+            modal.classList.toggle('hidden');
+            renderWishlist();
+        }
+
+        function moveAllWishlistToCart() {
+            wishlist.forEach(item => {
+                if (!cart.some(c => c.id === item.id)) {
+                    cart.push({ ...item, quantity: 1 });
+                }
+            });
+            wishlist = [];
+            updateBadges();
+            renderProducts();
+            renderWishlist();
+            toggleWishlistModal();
+            showNotification("All wishlist items added to cart!");
+        }
+
+        function updateBadges() {
+            const cartBadge = document.getElementById('cart-badge');
+            const totalCartItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+            if (totalCartItems > 0) {
+                cartBadge.innerText = totalCartItems;
+                cartBadge.classList.remove('hidden');
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+
+            const wishlistBadge = document.getElementById('wishlist-badge');
+            if (wishlist.length > 0) {
+                wishlistBadge.innerText = wishlist.length;
+                wishlistBadge.classList.remove('hidden');
+            } else {
+                wishlistBadge.classList.add('hidden');
+            }
+        }
+
+        // --- Product Detail Modal ---
+        function openProductModal(productId) {
+            const p = products.find(item => item.id === productId);
+            const title = p.title[currentLang] || p.title['en'];
+            const desc = p.desc[currentLang] || p.desc['en'];
+            const t = translations[currentLang] || translations['en'];
+
+            const modalContent = document.getElementById('product-modal-content');
+            modalContent.innerHTML = `
+                <div class="bg-slate-100 h-80 md:h-full">
+                    <img src="${p.image}" alt="${title}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/indigo/white?text=Aetheria'">
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-3">
+                        <span class="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">${p.category}</span>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">${title}</h3>
+                        <div class="flex items-center gap-2 text-sm text-slate-600">
+                            <span class="flex items-center gap-1 text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating}</span>
+                            <span>(${p.reviewsCount} global reviews)</span>
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed">${desc}</p>
+                        <div class="space-y-2 pt-2 text-xs text-slate-500">
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-indigo-600"></i> ${t.warranty}</div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-truck-fast text-emerald-600"></i> ${t.freeShipping}</div>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 uppercase">Price</span>
+                            <div class="text-2xl font-extrabold text-indigo-900">${formatPrice(p.priceUSD)}</div>
+                        </div>
+                        <button onclick="addToCart(${p.id}); closeProductModal();" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-indigo-600/30 transition text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>${t.addToCart}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('product-detail-modal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-detail-modal').classList.add('hidden');
+        }
+
+        // --- Duty & Tax Calculator Modal ---
+        function openDutyCalculatorModal() {
+            document.getElementById('duty-calculator-modal').classList.remove('hidden');
+            calculateDuty();
+        }
+
+        function closeDutyCalculatorModal() {
+            document.getElementById('duty-calculator-modal').classList.add('hidden');
+        }
+
+        function calculateDuty() {
+            const country = document.getElementById('calc-country').value;
+            const amount = parseFloat(document.getElementById('calc-amount').value) || 0;
+            
+            let vatRate = 0.15;
+            let dutyRate = 0.10;
+
+            if (country === 'US') { vatRate = 0.0; dutyRate = 0.03; }
+            else if (country === 'AE') { vatRate = 0.05; dutyRate = 0.05; }
+            else if (country === 'CN') { vatRate = 0.13; dutyRate = 0.08; }
+            else if (country === 'EU') { vatRate = 0.20; dutyRate = 0.04; }
+
+            const tax = amount * vatRate;
+            const tariff = amount * dutyRate;
+            const total = amount + tax + tariff;
+
+            document.getElementById('calc-res-base').innerText = formatPrice(amount);
+            document.getElementById('calc-res-tax').innerText = formatPrice(tax);
+            document.getElementById('calc-res-tariff').innerText = formatPrice(tariff);
+            document.getElementById('calc-res-total').innerText = formatPrice(total);
+        }
+
+        // --- Utilities ---
+        function scrollToCatalog() {
+            document.getElementById('catalog-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletter-email').value;
+            if (email && email.includes('@')) {
+                showNotification("Successfully subscribed to international trade updates!");
+                document.getElementById('newsletter-email').value = '';
+            } else {
+                showNotification("Please enter a valid email address.");
+            }
+        }
+
+        function showNotification(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
